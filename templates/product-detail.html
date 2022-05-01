@@ -55,7 +55,7 @@
                         <i class='bx bx-search-alt'></i>
                     </div>
                     <ul class="user-menu">
-                        <form action="./log.html" target="_blank">
+                        <form action="{{ url_for('registrate') }}" target="_blank">
                             <button class="btn-flat btn-hover">
                                 <li><a href="#"><i class='bx bx-user-circle'></i></a></li>
                             </button>
@@ -74,7 +74,7 @@
                         <li><a href="#">home</a></li>
                         <!-- mega menu -->
                         <li class="mega-dropdown">
-                            <a href="./products.html">Shop<i class='bx bxs-chevron-down'></i></a>
+                            <a href="{{ url_for('explain') }}">Shop<i class='bx bxs-chevron-down'></i></a>
                             <div class="mega-content">
                                 <div class="row">
                                     <div class="col-3 col-md-12">
@@ -163,12 +163,11 @@
         <div class="container">
             <div class="box">
                 <div class="breadcumb">
-                    <a href="./index.html">home</a>
+                    <a href="{{ url_for('menu') }}">home</a>
                     <span><i class='bx bxs-chevrons-right'></i></span>
-                    <a href="./products.html">all products</a>
+                    <a href="{{ url_for('all_product') }}">all products</a>
                     <span><i class='bx bxs-chevrons-right'></i></span>
-                    <a href="./product-detail.html">JBL Tune 750TNC</a>
-
+                    <a href="{{ url_for('login') }}">JBL Tune 750TNC</a>
                 </div>
             </div>
             <div class="row product-row">
