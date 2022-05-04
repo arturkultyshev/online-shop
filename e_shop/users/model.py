@@ -3,10 +3,15 @@ from datetime import datetime
 from flask_login import UserMixin
 
 
+
 @login_manager.user_loader
 def user_loader(user_id):
     return Register.query.get(user_id)
 #создание формы для регистрации для базы данных. Столбцы: айди, имя, логин, пароль, почта, дата создания.
+@login_manager.user_loader
+def user_loader(user_id):
+    return Register.query.get(user_id)
+#создание бд строк для регистрации. Столбцы:айди, имя, логин, почта, пароль, дата создания
 class Register(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key= True)
     name = db.Column(db.String(50), unique= False)
