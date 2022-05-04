@@ -12,6 +12,10 @@ db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 search = Search()
 search.init_app(app)
+key = app.dotenv_values(".env")["SECRET_KEY"]
+sql_alchemy_database = app.dotenv_values(".env")["SQLALCHEMY_DATABASE_URI"]
+sql_alchemy_track = app.dotenv_values(".env")["SQLALCHEMY_TRACK_MODIFICATIONS"]
+photos_upload = app.dotenv_values(".env")["UPLOADED_PHOTOS_DEST"]
 # запрашивает местоположение файла(адрес), в котором выполняется код
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 photos = UploadSet('photos', IMAGES)
