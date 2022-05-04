@@ -1,6 +1,6 @@
 from wtforms import StringField, PasswordField,SubmitField,validators, ValidationError
 from flask_wtf import FlaskForm
-
+from .model import Register
 
 #форма регистрации в которой присутствуют такие поля как имя, логин, почта, пароль, подтверждение пароля.
 class CustomerRegisterForm(FlaskForm):
@@ -20,3 +20,8 @@ class CustomerRegisterForm(FlaskForm):
     def validate_email(self, email):
         if Register.query.filter_by(email=email.data).first():
             raise ValidationError("Данная почта уже существует!")
+
+
+class CustomerLoginFrom(FlaskForm):
+    email = StringField('Email: ', [validators.Email(), validators.DataRequired()])
+    password = PasswordField('Password: ', [validators.DataRequired()])
