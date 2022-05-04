@@ -5,6 +5,7 @@ from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_cl
 import os
 from flask_msearch import Search
 from flask_login import LoginManager
+from dotenv import dotenv_values
 
 
 app = Flask(__name__)
