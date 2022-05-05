@@ -119,7 +119,7 @@ def addcat():
         getcat = request.form.get('category')
         category = Category(name=getcat)
         db.session.add(category)
-        flash(f'The brand {getcat} was added to your database', 'success')
+        flash(f'The category {getcat} was added to your database', 'success')
         db.session.commit()
         return redirect(url_for('addcat'))
     return render_template('products/addbrand.html', title='Add category')
@@ -148,11 +148,11 @@ def deletecat(id):
     category = Category.query.get_or_404(id)
     if request.method == "POST":
         db.session.delete(category)
-        flash(f"The brand {category.name} was deleted from your database",
+        flash(f"The category {category.name} was deleted from your database",
               "success")
         db.session.commit()
         return redirect(url_for('admin'))
-    flash(f"The brand {category.name} can't be  deleted from your database",
+    flash(f"The category {category.name} can't be  deleted from your database",
           "warning")
     return redirect(url_for('admin'))
 
