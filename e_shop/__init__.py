@@ -40,6 +40,6 @@ login_manager.login_message = u"Please login first"
 
 from e_shop.products import routes
 from e_shop.admin import routes
-from e_shop.carts import carts
-from e_shop.customers import routes
+from e_shop.busket import busket
+from e_shop.users import routes
 
