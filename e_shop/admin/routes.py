@@ -1,8 +1,8 @@
 from flask import render_template, session, request, redirect, url_for, flash
-from shop import app, db, bcrypt
+from e_shop import app, db, bcrypt
 from .forms import RegistrationForm, LoginForm
 from .models import User
-from shop.products.models import Addproduct, Category, Brand
+from e_shop.products.models import Addproduct, Category, Brand
  
  
 @app.route('/admin')
@@ -56,3 +56,6 @@ def login():
             flash(f'Wrong email and password', 'success')
             return redirect(url_for('login'))
     return render_template('admin/login.html', title='Login page', form=form)
+
+
+

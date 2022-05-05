@@ -1,4 +1,4 @@
-from shop import db
+from e_shop import db
 from datetime import datetime
 
 

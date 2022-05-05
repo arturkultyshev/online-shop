@@ -1,4 +1,4 @@
-from shop import db, login_manager
+from e_shop import db, login_manager
 from datetime import datetime
 from flask_login import UserMixin
 
