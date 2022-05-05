@@ -40,7 +40,7 @@ class Category(db.Model):
     name = db.Column(db.String(30), unique=True, nullable=False)
 
     def __repr__(self):
-        return '<Catgory %r>' % self.name
+        return '<Category %r>' % self.name
 
 
 db.create_all()

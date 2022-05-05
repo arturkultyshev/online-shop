@@ -62,10 +62,10 @@ def get_category(id):
     get_cat = Category.query.filter_by(id=id).first_or_404()
     get_cat_prod = Addproduct.query.filter_by(category=get_cat).\
         paginate(page=page, per_page=8)
-    return render_template('products/index.html', 
-                           get_cat_prod=get_cat_prod, 
-                           brands=brands(), 
-                           categories=categories(), 
+    return render_template('products/index.html',
+                           get_cat_prod=get_cat_prod,
+                           brands=brands(),
+                           categories=categories(),
                            get_cat=get_cat)
 
 
@@ -142,7 +142,22 @@ def updatecat(id):
                            updatecat=updatecat)
 
 
-@app.route('/addproduct', methods=['GET','POST'])
+@app.route('/deletecat/<int:id>',
+           methods=['GET', 'POST'])
+def deletecat(id):
+    category = Category.query.get_or_404(id)
+    if request.method == "POST":
+        db.session.delete(category)
+        flash(f"The brand {category.name} was deleted from your database",
+              "success")
+        db.session.commit()
+        return redirect(url_for('admin'))
+    flash(f"The brand {category.name} can't be  deleted from your database",
+          "warning")
+    return redirect(url_for('admin'))
+
+
+@app.route('/addproduct', methods=['GET', 'POST'])
 def addproduct():
     form = Addproducts(request.form)
     brands = Brand.query.all()
