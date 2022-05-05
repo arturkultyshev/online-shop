@@ -80,3 +80,64 @@ def addbrand():
         return redirect(url_for('addbrand'))
     return render_template('products/addbrand.html', title='Add brand', 
                            brands='brands')
+
+
+@app.route('/updatebrand/<int:id>', methods=['GET', 'POST'])
+def updatebrand(id):
+    if 'email' not in session:
+        flash('Login first please', 'danger')
+        return redirect(url_for('login'))
+    updatebrand = Brand.query.get_or_404(id)
+    brand = request.form.get('brand')
+    if request.method =="POST":
+        updatebrand.name = brand
+        flash(f'The brand {updatebrand.name} was changed to {brand}',
+              'success')
+        db.session.commit()
+        return redirect(url_for('brands'))
+    brand = updatebrand.name
+    return render_template('products/addbrand.html', title='Udate brand',
+                           brands='brands', updatebrand=updatebrand)
+
+
+@app.route('/deletebrand/<int:id>', methods=['GET', 'POST'])
+def deletebrand(id):
+    brand = Brand.query.get_or_404(id)
+    if request.method == "POST":
+        db.session.delete(brand)
+        flash(f"The brand {brand.name} was deleted from your database",
+              "success")
+        db.session.commit()
+        return redirect(url_for('admin'))
+    flash(f"The brand {brand.name} can't be  deleted from your database",
+          "warning")
+    return redirect(url_for('admin'))
+
+@app.route('/addcat',methods=['GET', 'POST'])
+def addcat():
+    if request.method =="POST":
+        getcat = request.form.get('category')
+        category = Category(name=getcat)
+        db.session.add(category)
+        flash(f'The brand {getcat} was added to your database', 'success')
+        db.session.commit()
+        return redirect(url_for('addcat'))
+    return render_template('products/addbrand.html', title='Add category')
+
+
+@app.route('/updatecat/<int:id>', methods=['GET', 'POST'])
+def updatecat(id):
+    if 'email' not in session:
+        flash('Login first please', 'danger')
+        return redirect(url_for('login'))
+    updatecat = Category.query.get_or_404(id)
+    category = request.form.get('category')  
+    if request.method == "POST":
+        updatecat.name = category
+        flash(f'The category {updatecat.name} was changed to {category}','success')
+        db.session.commit()
+        return redirect(url_for('categories'))
+    category = updatecat.name
+    return render_template('products/addbrand.html', title='Update cat',
+                           updatecat=updatecat)
+
