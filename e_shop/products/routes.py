@@ -12,6 +12,7 @@ def brands():
                               (Brand.id == Addproduct.brand_id)).all()
     return brands
 
+
 def categories():
     categories = Category.query.join(Addproduct, (Category.id == Addproduct.
                                                   category_id)).all()
@@ -26,6 +27,7 @@ def home():
     return render_template('products/index.html', products=products,
                            brands=brands(), categories=categories())
 
+
 @app.route('/result')
 def result():
     searchword = request.args.get('q')
@@ -34,6 +36,7 @@ def result():
     return render_template('products/result.html', 
                            products=products, brands=brands(), 
                            categories=categories())
+
 
 @app.route('/product/<int:id>')
 def single_page(id):
@@ -112,6 +115,7 @@ def deletebrand(id):
     flash(f"The brand {brand.name} can't be  deleted from your database",
           "warning")
     return redirect(url_for('admin'))
+
 
 @app.route('/addcat',methods=['GET', 'POST'])
 def addcat():
@@ -269,6 +273,6 @@ def deleteproduct(id):
         db.session.delete(product)
         db.session.commit()
         flash(f'The product {product.name} was delete from your record', 'success')
-        return redirect(url_for('adim'))
+        return redirect(url_for('admin'))
     flash(f'Can not delete the product', 'success')
     return redirect(url_for('admin'))

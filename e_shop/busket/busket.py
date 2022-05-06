@@ -1,8 +1,9 @@
-from flask import render_template, session, request, redirect, url_for, flash, current_app
+from flask import render_template, session, request, redirect,\
+    url_for, flash
 from e_shop import db, app
 from e_shop.products.models import Addproduct
 from e_shop.products.routes import brands, categories
-import json
+
 
 
 def MagerDicts(dict1, dict2):
@@ -20,13 +21,13 @@ def AddCart():
         color = request.form.get('colors')
         product = Addproduct.query.filter_by(id=product_id).first()
         if request.method == "POST":
-            DictItems = {product_id:{'name':product.name,
-                                     'price':float(product.price),
-                                     'discount':product.discount,
-                                     'color':color,
-                                     'quantity':quantity,
-                                     'image':product.image_1,
-                                     'colors':product.colors}}
+            DictItems = {product_id: {'name': product.name,
+                                     'price': float(product.price),
+                                     'discount': product.discount,
+                                     'color': color,
+                                     'quantity': quantity,
+                                     'image': product.image_1,
+                                     'colors': product.colors}}
             if 'Shoppingcart' in session:
                 print(session['Shoppingcart'])
                 if product_id in session['Shoppingcart']:
@@ -44,8 +45,6 @@ def AddCart():
 
     except Exception as e:
         print(e)
-        
-        
 @app.route('/carts')
 def getCart():
     if 'Shoppingcart' not in session or len(session['Shoppingcart']) <= 0:
@@ -62,7 +61,6 @@ def getCart():
                            grandtotal=grandtotal,
                            brands=brands(),
                            categories=categories())
-
 
 
 @app.route('/updatecart/<int:code>', methods=['POST'])
@@ -83,7 +81,6 @@ def updatecart(code):
         except Exception as e:
             print(e)
             return redirect(url_for('getCart'))
-
 
 
 @app.route('/deleteitem/<int:id>')

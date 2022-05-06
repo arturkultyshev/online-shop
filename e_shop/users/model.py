@@ -1,23 +1,29 @@
 from e_shop import db, login_manager
 from datetime import datetime
 from flask_login import UserMixin
+import json
 
 
 @login_manager.user_loader
 def user_loader(user_id):
     return Register.query.get(user_id)
-#создание формы для регистрации для базы данных. Столбцы: айди, имя, логин, пароль, почта, дата создания.
+
+
+# создание формы для регистрации для базы данных.
+# Столбцы: айди, имя, логин, пароль, почта, дата создания.
 @login_manager.user_loader
 def user_loader(user_id):
     return Register.query.get(user_id)
 
-#создание бд строк для регистрации. Столбцы:айди, имя, логин, почта, пароль, дата создания
+
+# создание бд строк для регистрации.
+# Столбцы: айди, имя, логин, почта, пароль, дата создания
 class Register(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key= True)
-    name = db.Column(db.String(50), unique= False)
-    username = db.Column(db.String(50), unique= True)
-    email = db.Column(db.String(50), unique= True)
-    password = db.Column(db.String(200), unique= False)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=False)
+    username = db.Column(db.String(50), unique=True)
+    email = db.Column(db.String(50), unique=True)
+    password = db.Column(db.String(200), unique=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
 
@@ -38,7 +44,8 @@ class JsonEcodedDict(db.TypeDecorator):
         else:
             return json.loads(value)
 
-#создание модели для формирования заказа
+
+# создание модели для формирования заказа
 class CustomerOrder(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     invoice = db.Column(db.String(20), unique=True, nullable=False)
