@@ -265,8 +265,6 @@ def deleteproduct(id):
                                    + product.image_2))
             os.unlink(os.path.join(current_app.root_path, "static/images/"
                                    + product.image_3))
-        except Exception as e:
-            print(e)
         db.session.delete(product)
         db.session.commit()
         flash(f'The product {product.name} was delete from your record',
