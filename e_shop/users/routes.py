@@ -33,6 +33,10 @@ def payment():
     db.session.commit()
     return redirect(url_for('thanks'))
 
+# карта магазинов
+@app.route('/map')
+def map_function():
+    return render_template('customer/map.html')
 
 # благодарим пользователя за покупку
 @app.route('/thanks')
