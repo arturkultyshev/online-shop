@@ -3,4 +3,5 @@
 __pycache__
 e_shop/.env
 e_shop/shop.db
-.DS_store
+.DS_Store
+e_shop/.DS_Store
