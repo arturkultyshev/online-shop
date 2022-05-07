@@ -42,7 +42,7 @@ def AddCart():
                 session['Shoppingcart'] = DictItems
                 return redirect(request.referrer)
               
-    except ConnectionError as e:
+    except ConnectionError:
         redirect(request.referrer)
 
 
@@ -94,8 +94,7 @@ def deleteitem(id):
             if int(key) == id:
                 session['Shoppingcart'].pop(key, None)
                 return redirect(url_for('getCart'))
-    except Exception as e:
-        print(e)
+    except ConnectionError:
         return redirect(url_for('getCart'))
 
 
