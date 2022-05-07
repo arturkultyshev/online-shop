@@ -33,8 +33,8 @@ patch_request_class(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view ='customerLogin'
-login_manager.needs_refresh_message_category='danger'
+login_manager.login_view = 'customerLogin'
+login_manager.needs_refresh_message_category = 'danger'
 login_manager.login_message = u"Please login first"
 
 
@@ -42,4 +42,3 @@ from e_shop.products import routes
 from e_shop.admin import routes
 from e_shop.busket import busket
 from e_shop.users import routes
-

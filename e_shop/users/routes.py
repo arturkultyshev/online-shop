@@ -7,12 +7,14 @@ from .model import Register, CustomerOrder
 import secrets
 import pdfkit
 import stripe
+from dotenv import load_dotenv
+import os
 
-buplishable_key = 'pk_test_MaILxTYQ15v5Uhd6NKI9wPdD00qdL0QZSl'
-stripe.api_key = 'sk_test_9JlhVB6qwjcRdYzizjdwgIo0Dt00N55uxbWy'
+buplishable_key = f'{os.getenv("BK")}'
+stripe.api_key = f'{os.getenv("APIKEY")}'
 
 
-# переход окна на страничку с оплатой
+""" переход окна на страничку с оплатой"""
 @app.route('/payment', methods=['POST'])
 def payment():
     invoice = request.get('invoice')
@@ -33,19 +35,19 @@ def payment():
     db.session.commit()
     return redirect(url_for('thanks'))
 
-# карта магазинов
+"""карта магазинов"""
 @app.route('/map')
 def map_function():
     return render_template('customer/map.html')
 
-# благодарим пользователя за покупку
+"""благодарим пользователя за покупку"""
 @app.route('/thanks')
 def thanks():
     return render_template('customer/thank.html')
 
 
-# переход на окно регистрации, где пользователь может
-# зарегистрироваться благодаря введению своих персональных данных
+"""переход на окно регистрации, где пользователь может
+зарегистрироваться благодаря введению своих персональных данных"""
 @app.route('/customer/register', methods=['GET', 'POST'])
 def customer_register():
     form = CustomerRegisterForm()
@@ -60,14 +62,15 @@ def customer_register():
     return render_template('customer/register.html', form=form)
 
 
-# переход на страницу авторизации. Только зарегистрированный пользователь может выполнить авторизацию.
-# В случае не корректно введенных файлов выходит ошибка о неверном вводе
+""" переход на страницу авторизации. Только зарегистрированный пользователь может выполнить авторизацию.
+В случае не корректно введенных файлов выходит ошибка о неверном вводе"""
 @app.route('/customer/login', methods=['GET', 'POST'])
 def customerLogin():
     form = CustomerLoginFrom()
     if form.validate_on_submit():
         user = Register.query.filter_by(email=form.email.data).first()
-        if user and bcrypt.check_password_hash(user.password, form.password.data):
+        if user and bcrypt.check_password_hash(user.password,
+                                               form.password.data):
             login_user(user)
             flash('You are login now!', 'success')
             next = request.args.get('next')
@@ -78,14 +81,14 @@ def customerLogin():
     return render_template('customer/login.html', form=form)
 
 
-# пользователь который прошел авторизацию может выйти из своего аккаунта
+"""пользователь который прошел авторизацию может выйти из своего аккаунта"""
 @app.route('/customer/logout')
 def customer_logout():
     logout_user()
     return redirect(url_for('home'))
 
 
-# функция для дополнения корзины
+"""функция для дополнения корзины"""
 def updateshoppingcart():
     for key, shopping in session['Shoppingcart'].items():
         session.modified = True
@@ -94,7 +97,7 @@ def updateshoppingcart():
     return updateshoppingcart
 
 
-# переход для оформления заказа
+"""переход для оформления заказа"""
 @app.route('/getorder')
 @login_required
 def get_order():
@@ -103,7 +106,8 @@ def get_order():
         invoice = secrets.token_hex(5)
         updateshoppingcart
         try:
-            order = CustomerOrder(invoice=invoice, customer_id=customer_id, orders=session['Shoppingcart'])
+            order = CustomerOrder(invoice=invoice, customer_id=customer_id,
+                                  orders=session['Shoppingcart'])
             db.session.add(order)
             db.session.commit()
             session.pop('Shoppingcart')
@@ -115,8 +119,10 @@ def get_order():
             return redirect(url_for('getCart'))
 
 
-# функционал подсчета итоговой стоймости всех товаров,
-# которые пользователь добавил в корзину
+"""
+функционал подсчета итоговой стоймости всех товаров,
+которые пользователь добавил в корзину
+ """
 @app.route('/orders/<invoice>')
 @login_required
 def orders(invoice):
@@ -125,7 +131,8 @@ def orders(invoice):
         subTotal = 0
         customer_id = current_user.id
         customer = Register.query.filter_by(id=customer_id).first()
-        orders = CustomerOrder.query.filter_by(customer_id=customer_id, invoice=invoice).order_by(
+        orders = CustomerOrder.query.filter_by(customer_id=customer_id,
+                                               invoice=invoice).order_by(
             CustomerOrder.id.desc()).first()
         for _key, product in orders.orders.items():
             discount = (product['discount'] / 100) * float(product['price'])
@@ -141,7 +148,7 @@ def orders(invoice):
                 customer=customer, orders=orders)
 
 
-# для создания pdf файла с заказом
+"""для создания pdf файла с заказом"""
 @app.route('/get_pdf/<invoice>', methods=['POST'])
 @login_required
 def get_pdf(invoice):
@@ -161,11 +168,13 @@ def get_pdf(invoice):
                 tax = ("%.2f" % (.06 * float(subTotal)))
                 grandTotal = float("%.2f" % (1.06 * subTotal))
 
-            rendered = render_template('customer/pdf.html', invoice=invoice, tax=tax, grandTotal=grandTotal,
+            rendered = render_template('customer/pdf.html', invoice=invoice,
+                                       tax=tax, grandTotal=grandTotal,
                                        customer=customer, orders=orders)
             pdf = pdfkit.from_string(rendered, False)
             response = make_response(pdf)
             response.headers['content-Type'] = 'application/pdf'
-            response.headers['content-Disposition'] = 'inline; filename=' + invoice + '.pdf'
+            response.headers['content-Disposition'] = 'inline; filename='\
+                                                      + invoice + '.pdf'
             return response
     return request(url_for('orders'))

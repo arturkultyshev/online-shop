@@ -117,9 +117,9 @@ def deletebrand(id):
     return redirect(url_for('admin'))
 
 
-@app.route('/addcat',methods=['GET', 'POST'])
+@app.route('/addcat', methods=['GET', 'POST'])
 def addcat():
-    if request.method =="POST":
+    if request.method == "POST":
         getcat = request.form.get('category')
         category = Category(name=getcat)
         db.session.add(category)
@@ -138,7 +138,8 @@ def updatecat(id):
     category = request.form.get('category')  
     if request.method == "POST":
         updatecat.name = category
-        flash(f'The category {updatecat.name} was changed to {category}','success')
+        flash(f'The category {updatecat.name} was changed to {category}',
+              'success')
         db.session.commit()
         return redirect(url_for('categories'))
     category = updatecat.name
@@ -240,7 +241,7 @@ def updateproduct(id):
                 product.image_3 = photos.save(request.files.get('image_3'),
                                               name=secrets.token_hex(10) + ".")
 
-        flash('The product was updated','success')
+        flash('The product was updated', 'success')
         db.session.commit()
         return redirect(url_for('admin'))
     form.name.data = product.name
@@ -272,7 +273,8 @@ def deleteproduct(id):
             print(e)
         db.session.delete(product)
         db.session.commit()
-        flash(f'The product {product.name} was delete from your record', 'success')
+        flash(f'The product {product.name} was delete from your record',
+              'success')
         return redirect(url_for('admin'))
     flash(f'Can not delete the product', 'success')
     return redirect(url_for('admin'))

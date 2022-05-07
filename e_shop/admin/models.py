@@ -1,7 +1,7 @@
 from e_shop import db
 
 
-# https://flask.palletsprojects.com/en/2.1.x/patterns/wtforms/?highlight=forms
+'''https://flask.palletsprojects.com/en/2.1.x/patterns/wtforms/?highlight=forms'''
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=False, nullable=False)

@@ -9,7 +9,8 @@ from .model import Register
 class CustomerRegisterForm(FlaskForm):
     name = StringField('Name: ')
     username = StringField('Username: ', [validators.DataRequired()])
-    email = StringField('Email: ', [validators.Email(), validators.DataRequired()])
+    email = StringField('Email: ', [validators.Email(),
+                                    validators.DataRequired()])
     password = PasswordField('Password: ', [validators.DataRequired(),
             validators.EqualTo('confirm', message=' Пароли не совпадают! ')])
     confirm = PasswordField('Repeat Password: ', [validators.DataRequired()])
@@ -30,5 +31,6 @@ class CustomerRegisterForm(FlaskForm):
 
 
 class CustomerLoginFrom(FlaskForm):
-    email = StringField('Email: ', [validators.Email(), validators.DataRequired()])
+    email = StringField('Email: ', [validators.Email(),
+                                    validators.DataRequired()])
     password = PasswordField('Password: ', [validators.DataRequired()])

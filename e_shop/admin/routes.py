@@ -3,7 +3,7 @@ from e_shop import app, db, bcrypt
 from .forms import RegistrationForm, LoginForm
 from .models import User
 from e_shop.products.models import Addproduct, Category, Brand
-
+'''Данный файл нужен для определения путей перехода между страницами'''
 
 @app.route('/admin')
 def admin():
