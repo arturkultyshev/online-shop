@@ -14,56 +14,48 @@ buplishable_key = f'{os.getenv("BK")}'
 stripe.api_key = f'{os.getenv("APIKEY")}'
 
 
-""" переход окна на страничку с оплатой"""
-@app.route('/payment', methods=['POST'])
+@app.route('/payment',methods=['POST'])
 def payment():
     invoice = request.get('invoice')
     amount = request.form.get('amount')
     customer = stripe.Customer.create(
-        email=request.form['stripeEmail'],
-        source=request.form['stripeToken'],
+      email=request.form['stripeEmail'],
+      source=request.form['stripeToken'],
     )
     charge = stripe.Charge.create(
-        customer=customer.id,
-        description='Myshop',
-        amount=amount,
-        currency='usd',
+      customer=customer.id,
+      description='Myshop',
+      amount=amount,
+      currency='usd',
     )
-    orders = CustomerOrder.query.filter_by(customer_id=current_user.id,
-        invoice=invoice).order_by(CustomerOrder.id.desc()).first()
+    orders =  CustomerOrder.query.\
+        filter_by(customer_id = current_user.id,
+                                            invoice=invoice).\
+        order_by(CustomerOrder.id.desc()).first()
     orders.status = 'Paid'
     db.session.commit()
     return redirect(url_for('thanks'))
 
-"""карта магазинов"""
 @app.route('/map')
 def map_function():
-    return render_template('customer/map.html')
-
-"""благодарим пользователя за покупку"""
-@app.route('/thanks')
-def thanks():
-    return render_template('customer/thank.html')
+     return render_template('customer/map.html')
 
 
-"""переход на окно регистрации, где пользователь может
-зарегистрироваться благодаря введению своих персональных данных"""
 @app.route('/customer/register', methods=['GET', 'POST'])
 def customer_register():
     form = CustomerRegisterForm()
     if form.validate_on_submit():
         hash_password = bcrypt.generate_password_hash(form.password.data)
-        register = Register(name=form.name.data, username=form.username.data,
-                            email=form.email.data,
-                            password=hash_password)
+        register = Register(name=form.name.data,
+                            username=form.username.data,
+                            email=form.email.data, password=hash_password)
         db.session.add(register)
+        flash(f'Welcome {form.name.data} Thank you for registering', 'success')
         db.session.commit()
-        return redirect(url_for('home'))
+        return redirect(url_for('login'))
     return render_template('customer/register.html', form=form)
 
 
-""" переход на страницу авторизации. Только зарегистрированный пользователь может выполнить авторизацию.
-В случае не корректно введенных файлов выходит ошибка о неверном вводе"""
 @app.route('/customer/login', methods=['GET', 'POST'])
 def customerLogin():
     form = CustomerLoginFrom()
@@ -75,20 +67,17 @@ def customerLogin():
             flash('You are login now!', 'success')
             next = request.args.get('next')
             return redirect(next or url_for('home'))
-        flash('Incorrect email and password', 'danger')
+        flash('Incorrect email and password','danger')
         return redirect(url_for('customerLogin'))
 
     return render_template('customer/login.html', form=form)
 
 
-"""пользователь который прошел авторизацию может выйти из своего аккаунта"""
 @app.route('/customer/logout')
 def customer_logout():
     logout_user()
     return redirect(url_for('home'))
 
-
-"""функция для дополнения корзины"""
 def updateshoppingcart():
     for key, shopping in session['Shoppingcart'].items():
         session.modified = True
@@ -97,7 +86,6 @@ def updateshoppingcart():
     return updateshoppingcart
 
 
-"""переход для оформления заказа"""
 @app.route('/getorder')
 @login_required
 def get_order():
@@ -106,7 +94,8 @@ def get_order():
         invoice = secrets.token_hex(5)
         updateshoppingcart
         try:
-            order = CustomerOrder(invoice=invoice, customer_id=customer_id,
+            order = CustomerOrder(invoice=invoice,
+                                  customer_id=customer_id,
                                   orders=session['Shoppingcart'])
             db.session.add(order)
             db.session.commit()
@@ -119,10 +108,6 @@ def get_order():
             return redirect(url_for('getCart'))
 
 
-"""
-функционал подсчета итоговой стоймости всех товаров,
-которые пользователь добавил в корзину
- """
 @app.route('/orders/<invoice>')
 @login_required
 def orders(invoice):
@@ -132,10 +117,10 @@ def orders(invoice):
         customer_id = current_user.id
         customer = Register.query.filter_by(id=customer_id).first()
         orders = CustomerOrder.query.filter_by(customer_id=customer_id,
-                                               invoice=invoice).order_by(
-            CustomerOrder.id.desc()).first()
+                                               invoice=invoice).\
+            order_by(CustomerOrder.id.desc()).first()
         for _key, product in orders.orders.items():
-            discount = (product['discount'] / 100) * float(product['price'])
+            discount = (product['discount']/100) * float(product['price'])
             subTotal += float(product['price']) * int(product['quantity'])
             subTotal -= discount
             tax = ("%.2f" % (.06 * float(subTotal)))
@@ -144,11 +129,12 @@ def orders(invoice):
     else:
         return redirect(url_for('customerLogin'))
     return render_template('customer/order.html', invoice=invoice,
-                tax=tax, subTotal=subTotal, grandTotal=grandTotal,
-                customer=customer, orders=orders)
+                           tax=tax,subTotal=subTotal,
+                           grandTotal=grandTotal,
+                           customer=customer,
+                           orders=orders)
 
 
-"""для создания pdf файла с заказом"""
 @app.route('/get_pdf/<invoice>', methods=['POST'])
 @login_required
 def get_pdf(invoice):
@@ -159,22 +145,26 @@ def get_pdf(invoice):
         if request.method == "POST":
             customer = Register.query.filter_by(id=customer_id).first()
             orders = CustomerOrder.query.filter_by(customer_id=customer_id,
-                    invoice=invoice).order_by(CustomerOrder.id.desc()).first()
+                                                   invoice=invoice).\
+                order_by(CustomerOrder.id.desc()).first()
             for _key, product in orders.orders.items():
-                discount = (product['discount'] / 100) * \
-                           float(product['price'])
+                discount = (product['discount']/100) * float(product['price'])
                 subTotal += float(product['price']) * int(product['quantity'])
                 subTotal -= discount
                 tax = ("%.2f" % (.06 * float(subTotal)))
                 grandTotal = float("%.2f" % (1.06 * subTotal))
 
-            rendered = render_template('customer/pdf.html', invoice=invoice,
-                                       tax=tax, grandTotal=grandTotal,
-                                       customer=customer, orders=orders)
+            rendered =  render_template('customer/pdf.html', invoice=invoice,
+                                        tax=tax,grandTotal=grandTotal,
+                                        customer=customer, orders=orders)
             pdf = pdfkit.from_string(rendered, False)
             response = make_response(pdf)
-            response.headers['content-Type'] = 'application/pdf'
-            response.headers['content-Disposition'] = 'inline; filename='\
-                                                      + invoice + '.pdf'
+            response.headers['content-Type'] ='application/pdf'
+            response.headers['content-Disposition'] ='inline;' \
+                                                     ' filename=' + \
+                                                     invoice+'.pdf'
             return response
     return request(url_for('orders'))
+
+
+
