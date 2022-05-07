@@ -1,9 +1,9 @@
-from flask import render_template, session, redirect, url_for, flash
+from flask import render_template, session, request, redirect, url_for, flash
 from e_shop import app, db, bcrypt
 from .forms import RegistrationForm, LoginForm
 from .models import User
 from e_shop.products.models import Addproduct, Category, Brand
-'''Данный файл нужен для определения путей перехода между страницами'''
+
 
 @app.route('/admin')
 def admin():
@@ -31,7 +31,7 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         hash_password = bcrypt.generate_password_hash(form.password.data)
-        user = User(name=form.name.data, username=form.username.data,
+        user = User(name=form.name.data,username=form.username.data,
                     email=form.email.data,
                     password=hash_password)
         db.session.add(user)
@@ -39,11 +39,11 @@ def register():
               'success')
         db.session.commit()
         return redirect(url_for('login'))
-    return render_template('admin/register.html', title='Register user',
+    return render_template('admin/register.html',title='Register user',
                            form=form)
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login',methods=['GET','POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
