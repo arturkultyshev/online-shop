@@ -1,7 +1,8 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
+from flask_uploads import UploadSet, configure_uploads, IMAGES,\
+    patch_request_class
 import os
 from flask_msearch import Search
 from flask_login import LoginManager
@@ -20,7 +21,8 @@ BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
 app.config['SQLALCHEMY_DATABASE_URI'] = f'{os.getenv("SQLALCHEMY_URI")}'
 app.config['SECRET_KEY'] = f'{os.getenv("SECRET_K")}'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = f'{os.getenv("SQLALCHEMY_TRACK_MOD")}'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] =\
+    f'{os.getenv("SQLALCHEMY_TRACK_MOD")}'
 app.config['UPLOADED_PHOTOS_DEST'] = f'{os.getenv("UPLOADED_PHOTOS_D")}'
 
 
