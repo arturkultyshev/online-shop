@@ -19,6 +19,7 @@ flask-ngrok==0.0.25
 Flask-SQLAlchemy==2.5.1
 Flask-Uploads==0.2.1
 Flask-WTF==1.0.0
+Flask-Reuploaded==1.2.0
 importlib-metadata==4.11.3
 isort==4.3.21
 itsdangerous==2.1.2
