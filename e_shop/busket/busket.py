@@ -1,16 +1,14 @@
-from flask import render_template, session, request, redirect,\
-    url_for, flash
+from flask import render_template, session, request, redirect, url_for, flash,\
+    current_app
 from e_shop import db, app
 from e_shop.products.models import Addproduct
 from e_shop.products.routes import brands, categories
+import json
 
-"""
-Обобщенная функция для объединения переменного количества вложенных словарей,
- в нее передаются только несколько словарей
-"""
+
 def MagerDicts(dict1, dict2):
     if isinstance(dict1, list) and isinstance(dict2, list):
-        return dict1  + dict2
+        return dict1 + dict2
     if isinstance(dict1, dict) and isinstance(dict2, dict):
         return dict(list(dict1.items()) + list(dict2.items()))
 
@@ -23,30 +21,29 @@ def AddCart():
         color = request.form.get('colors')
         product = Addproduct.query.filter_by(id=product_id).first()
         if request.method == "POST":
-            DictItems = {product_id: {'name': product.name,
-                                      'price': float(product.price),
-                                      'discount': product.discount,
-                                      'color': color, 'quantity': quantity,
-                                      'image': product.image_1,
-                                      'colors': product.colors}}
+            DictItems = {product_id:{'name':product.name,
+                                     'price':float(product.price),
+                                     'discount':product.discount,
+                                     'color':color, 'quantity':quantity,
+                                     'image':product.image_1,
+                                     'colors':product.colors}}
             if 'Shoppingcart' in session:
                 print(session['Shoppingcart'])
                 if product_id in session['Shoppingcart']:
-                    for key,item in session['Shoppingcart'].items():
+                    for key, item in session['Shoppingcart'].items():
                         if int(key) == int(product_id):
                             session.modified = True
                             item['quantity'] += 1
                 else:
-                    session['Shoppingcart'] = MagerDicts(
-                        session['Shoppingcart'], DictItems)
+                    session['Shoppingcart'] =\
+                        MagerDicts(session['Shoppingcart'], DictItems)
                     return redirect(request.referrer)
             else:
                 session['Shoppingcart'] = DictItems
                 return redirect(request.referrer)
-
-    except ConnectionError:
-        return redirect(request.referrer)
-
+              
+    except ConnectionError as e:
+        redirect(request.referrer)
 
 
 @app.route('/carts')
@@ -63,14 +60,15 @@ def getCart():
         grandtotal = float("%.2f" % (1.06 * subtotal))
     return render_template('products/carts.html', tax=tax,
                            grandtotal=grandtotal,
-                           brands=brands(), categories=categories())
+                           brands=brands(),
+                           categories=categories())
 
 
 @app.route('/updatecart/<int:code>', methods=['POST'])
 def updatecart(code):
     if 'Shoppingcart' not in session or len(session['Shoppingcart']) <= 0:
         return redirect(url_for('home'))
-    if request.method =="POST":
+    if request.method == "POST":
         quantity = request.form.get('quantity')
         color = request.form.get('color')
         try:
@@ -85,6 +83,7 @@ def updatecart(code):
             return redirect(url_for('getCart'))
 
 
+
 @app.route('/deleteitem/<int:id>')
 def deleteitem(id):
     if 'Shoppingcart' not in session or len(session['Shoppingcart']) <= 0:
@@ -95,14 +94,15 @@ def deleteitem(id):
             if int(key) == id:
                 session['Shoppingcart'].pop(key, None)
                 return redirect(url_for('getCart'))
-    except ConnectionError:
+    except Exception as e:
+        print(e)
         return redirect(url_for('getCart'))
 
 
 @app.route('/clearcart')
 def clearcart():
-    try:
-        session.pop('Shoppingcart', None)
-        return redirect(url_for('home'))
-    except ConnectionError:
-        return redirect(url_for('home'))
+    session.pop('Shoppingcart', None)
+    return redirect(url_for('home'))
+    
+        
+
