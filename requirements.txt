@@ -1,6 +1,6 @@
 astroid==2.3.3
 bcrypt==3.2.2
-python-dotenv=0.20.0
+python-dotenv==0.20.0
 certifi==2021.10.8
 cffi==1.15.0
 click==8.1.3
