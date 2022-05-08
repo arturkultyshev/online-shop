@@ -19,8 +19,7 @@ search.init_app(app)
 # запрашивает местоположение файла(адрес), в котором выполняется код
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
-app.config['SQLALCHEMY_DATABASE_URI'] =\
-    f'sqlite:////{os.getenv("SQLALCHEMY_URI")}'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shop.db'
 app.config['SECRET_KEY'] = f'{os.getenv("SECRET_K")}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] =\
     f'{os.getenv("SQLALCHEMY_TRACK_MOD")}'
