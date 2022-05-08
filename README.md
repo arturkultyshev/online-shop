@@ -5,8 +5,8 @@
 *Для установления нашего проекта на главной странице проекта на GitHub.com вы найдете зеленую кнопку «Клонировать или скачать» в правом верхнем углу. Это позволяет вам сделать две вещи: Загрузка текстового файла. Чтобы загрузить текстовый файл, вы можете получить к нему доступ через браузер и щелкнуть ссылку для просмотра исходного кода. Установите версию python 3.9. Установите requirements.txt. Запустите run.py*
 
 
-API - использование Static API Карт * [https://yandex.ru/dev/maps/staticapi/?from=mapsapi]
-Использовали python 3.9
+
+API - использование Static API Карт * [https://yandex.ru/dev/maps/staticapi/?from=mapsapi], Bcrypt * [https://flask-bcrypt.readthedocs.io/en/1.0.1/]
 *Документ маршрутизатор*:
 * [https://flask.palletsprojects.com/en/2.1.x/]
 * [https://djbook.ru/rel1.9/ref/contrib/admin/index.html]
